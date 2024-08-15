@@ -5,7 +5,7 @@
     "url": "https://github.com/Yavix708/NLP_analyzer",
     "license": "AGPL-v3",
     "description": "Check for spelling mistakes in email",
-    "dataTypeList": ["mail"],
+    "dataTypeList": ["mail","other"],
     "command": "NLP_Analyzer.py",
     "configurationItems": [
       {
