@@ -2,11 +2,11 @@
     "name": "NLP_Analyzer",
     "version": "1.0",
     "author": "Bantor Yahya",
-    "url": "/root/analyzer",
+    "url": "https://github.com/Yavix708/NLP_analyzer",
     "license": "AGPL-v3",
     "description": "Check for spelling mistakes in email",
     "dataTypeList": ["mail"],
-    "command": "/root/analyzer/NLP_Analyzer.py",
+    "command": "NLP_Analyzer.py",
     "configurationItems": [
       {
         "name": "key",
