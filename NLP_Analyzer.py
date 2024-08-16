@@ -42,7 +42,7 @@ if __name__ == "__main__":
         data = json.loads(input_data)
         
         # Extract email text from the data
-        email_text = data.get('email_text', '')
+        email_text = data.get('mail', '')
         
         # Perform the analysis
         result = analyzer.analyze_email(email_text)
