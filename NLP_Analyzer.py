@@ -30,10 +30,9 @@ class NLPAnalyzer(Analyzer):
             return True
         return False
 
-    def extract_email_content(self, eml_file_path):
-        # Read the .eml file
-        with open(eml_file_path, 'rb') as f:
-            msg = BytesParser(policy=policy.default).parse(f)
+    def extract_email_content(self, eml_data):
+        # Parse the .eml data from a string
+        msg = BytesParser(policy=policy.default).parsebytes(eml_data.encode())
 
         # Extract email body (text/plain or text/html)
         email_body = None
@@ -49,14 +48,10 @@ class NLPAnalyzer(Analyzer):
 
     def run(self):
         # Extract the data passed by Cortex
-        try:
-            file_data = self.get_data()
-            eml_file_path = file_data['data']
-        except KeyError:
-            self.error("No data found in the file.")
+        eml_data = self.get_data()  # Gets the entire input from Cortex, assuming it is passed as a string
 
         # Extract the email content
-        email_text = self.extract_email_content(eml_file_path)
+        email_text = self.extract_email_content(eml_data)
 
         if not email_text:
             self.error("No email content found")
