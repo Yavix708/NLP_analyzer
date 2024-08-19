@@ -39,10 +39,12 @@ class NLPAnalyzer(Analyzer):
         if msg.is_multipart():
             for part in msg.iter_parts():
                 if part.get_content_type() == 'text/plain':
-                    email_body = part.get_payload(decode=True).decode(part.get_content_charset())
+                    charset = part.get_content_charset() or 'utf-8'
+                    email_body = part.get_payload(decode=True).decode(charset)
                     break
         else:
-            email_body = msg.get_payload(decode=True).decode(msg.get_content_charset())
+            charset = msg.get_content_charset() or 'utf-8'
+            email_body = msg.get_payload(decode=True).decode(charset)
 
         return email_body
 
