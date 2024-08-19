@@ -1,12 +1,13 @@
-import json
 import requests
-import sys
 import email
 from email import policy
 from email.parser import BytesParser
+from cortexutils.analyzer import Analyzer
 
-class CortexAnalyzer:
+
+class NLPAnalyzer(Analyzer):
     def __init__(self):
+        Analyzer.__init__(self)
         self.language_tool_url = 'https://api.languagetool.org/v2/check'
 
     def check_grammar(self, text):
@@ -29,11 +30,6 @@ class CortexAnalyzer:
             return True
         return False
 
-    def analyze_email(self, email_text):
-        if self.is_suspicious(email_text):
-            return {"status": "suspicious", "message": "Email contains too many spelling errors."}
-        return {"status": "safe", "message": "Email is fine."}
-
     def extract_email_content(self, eml_file_path):
         # Read the .eml file
         with open(eml_file_path, 'rb') as f:
@@ -51,22 +47,26 @@ class CortexAnalyzer:
 
         return email_body
 
-    def run(self, eml_file_path):
-        # Extract the email content from the .eml file
+    def run(self):
+        # Extract the data passed by Cortex
+        try:
+            file_data = self.get_data()
+            eml_file_path = file_data['data']
+        except KeyError:
+            self.error("No data found in the file.")
+
+        # Extract the email content
         email_text = self.extract_email_content(eml_file_path)
+
         if not email_text:
-            return {"status": "error", "message": "No email content found"}
+            self.error("No email content found")
 
         # Analyze the email content
-        result = self.analyze_email(email_text)
-        return result
+        if self.is_suspicious(email_text):
+            self.report({"status": "suspicious", "message": "Email contains too many spelling errors."})
+        else:
+            self.report({"status": "safe", "message": "Email is fine."})
+
 
 if __name__ == "__main__":
-    # Example of how to use this analyzer with a .eml file
-    eml_file_path = sys.argv[1]  # Pass the .eml file path as a command line argument
-
-    analyzer = CortexAnalyzer()
-    result = analyzer.run(eml_file_path)
-    
-    # Print the result in JSON format
-    print(json.dumps(result))
+    NLPAnalyzer().run()
